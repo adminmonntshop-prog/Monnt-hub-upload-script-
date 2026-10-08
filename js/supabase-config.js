@@ -1,0 +1,5 @@
+// js/supabase-config.js const SUPABASE_URL = "https://oeaveahbzflitbgsspcs.supabase.co" ; const SUPABASE_ANON_KEY = "sb_publishable_PNJCzveUSmEjQ47vLFUUIQ_AMjbvCWX" ;
+
+// ดึงตัวเรียกใช้งาน Supabase
+
+const supabase = window.supabas e.createClient (SUPABASE_URL, SUPABASE_ANON_KEY);
