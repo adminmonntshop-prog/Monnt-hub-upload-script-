@@ -14,8 +14,8 @@ async function checkAuth() {
 
 checkAuth();
 
-// ⚡ สร้าง Redirect URL ไปยัง dashboard.html อย่างแม่นยำ 100%
-const redirectUrl = new URL('dashboard.html', window.location.href).href;
+// ⚡ ลิงก์ Redirect ตรงเป๊ะตามชื่อ Repository ของคุณ
+const redirectUrl = "https://adminmonntshop-prog.github.io/Monnt-hub-upload-script-/dashboard.html";
 
 // ปุ่ม Google
 const btnGoogle = document.getElementById('btn-google');
