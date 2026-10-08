@@ -34,7 +34,6 @@ async function initApp() {
             dropdownMenu.classList.toggle('show');
         });
 
-        // คลิกพื้นที่อื่นเพื่อปิดเมนู
         document.addEventListener('click', (e) => {
             if (!dropdownMenu.contains(e.target) && e.target !== btnMenu) {
                 dropdownMenu.classList.remove('show');
@@ -71,14 +70,14 @@ async function initApp() {
 
     if (btnLogoutMenu && logoutModal) {
         btnLogoutMenu.addEventListener('click', () => {
-            if (dropdownMenu) dropdownMenu.classList.remove('show'); // ปิดดรอปดาวน์
-            logoutModal.style.display = 'flex'; // แสดงป๊อปอัปยืนยัน
+            if (dropdownMenu) dropdownMenu.classList.remove('show');
+            logoutModal.style.display = 'flex';
         });
     }
 
     if (btnModalCancel && logoutModal) {
         btnModalCancel.addEventListener('click', () => {
-            logoutModal.style.display = 'none'; // ปิดป๊อปอัปเมื่อยกเลิก
+            logoutModal.style.display = 'none';
         });
     }
 
@@ -86,19 +85,22 @@ async function initApp() {
         btnModalConfirm.addEventListener('click', async () => {
             if (window.supabaseClient) {
                 await window.supabaseClient.auth.signOut();
-                window.location.href = "auth.html"; // ออกจากระบบและกลับไปหน้าแรก
+                window.location.href = "auth.html";
             }
         });
     }
 
     // 6. ปุ่มยืนยันสร้างสคริปต์
     const btnCreate = document.getElementById('btn-create');
+    const toggleKeySystem = document.getElementById('toggle-key-system');
+
     if (btnCreate) {
         btnCreate.addEventListener('click', async () => {
             const nameInput = document.getElementById('script-name').value.trim();
             const codeInput = document.getElementById('script-code').value.trim();
             const hasPassword = togglePassword ? togglePassword.checked : false;
             const passwordInput = document.getElementById('script-password').value.trim();
+            const hasKeySystem = toggleKeySystem ? toggleKeySystem.checked : false;
 
             if (!nameInput || !codeInput) {
                 alert('⚠️ กรุณากรอกชื่อสคริปต์และโค้ด Lua ให้ครบถ้วน!');
@@ -114,6 +116,7 @@ async function initApp() {
             btnCreate.textContent = "⏳ กำลังสร้างสคริปต์...";
 
             const scriptId = generate25DigitId();
+            const keySystemUrl = "https://adminmonntshop-prog.github.io/Monnt-Hub-Key/";
 
             try {
                 const { error } = await window.supabaseClient
@@ -126,6 +129,8 @@ async function initApp() {
                             script_code: codeInput,
                             has_password: hasPassword,
                             password: hasPassword ? passwordInput : null,
+                            has_key_system: hasKeySystem,
+                            key_url: hasKeySystem ? keySystemUrl : null,
                             status: selectedStatus
                         }
                     ]);
@@ -136,7 +141,7 @@ async function initApp() {
                 if (error) {
                     alert('❌ เกิดข้อผิดพลาด: ' + error.message);
                 } else {
-                    const generatedLink = `loadstring(game:HttpGet("https://adminmonntshop-prog.github.io/script-upload/${scriptId}/raw/main.lua"))()`;
+                    const generatedLink = `loadstring(game:HttpGet("https://adminmonntshop-prog.github.io/Monnt-hub-upload-script-/${scriptId}/raw/main.lua"))()`;
                     
                     document.getElementById('display-script-link').textContent = generatedLink;
                     document.getElementById('result-box').style.display = 'block';
