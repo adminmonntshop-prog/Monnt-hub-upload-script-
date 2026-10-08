@@ -3,34 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monnt Hub - History</title>
-    <link rel="stylesheet" href="css/style.css">
-    <!-- ดึง Supabase Library -->
+    <title>Monnt Script Hub - ประวัติสคริปต์</title>
+    <link rel="stylesheet" href="css/style.css?v=4">
+    <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div class="dashboard-container">
-        <!-- แถบด้านบน -->
-        <header class="top-bar">
-            <h1>📜 ประวัติสคริปต์ของคุณ</h1>
-            <div class="user-info">
-                <a href="dashboard.html" class="btn-nav">➕ สร้างสคริปต์ใหม่</a>
-                <button id="btn-logout" class="btn-logout">ออกจากระบบ</button>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-box">
+                <img src="https://cdn.discordapp.com/avatars/1166763894061154337/04a8a74e6d62b8f8d45e75da263ff3c3.png" alt="Logo" class="logo-img" onerror="this.src='https://ui-avatars.com/api/?name=Monnt+Hub&background=2563eb&color=fff'">
+                <h1>Monnt Script Hub</h1>
+            </div>
+            
+            <div class="header-right">
+                <span class="admin-badge">🛡️ Admin</span>
+                <!-- Hamburger Menu -->
+                <div class="menu-wrapper">
+                    <button id="btn-menu" class="hamburger-btn" aria-label="Menu">☰</button>
+                    <div id="dropdown-menu" class="dropdown-menu" style="display: none;">
+                        <a href="dashboard.html" class="menu-item">➕ สร้างสคริปต์</a>
+                        <a href="history.html" class="menu-item">📜 ดูประวัติ</a>
+                        <button id="btn-logout-menu" class="menu-item logout-item">🚪 ออกจากระบบ</button>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <!-- รายการสคริปต์ -->
+        <!-- Main Content -->
         <main class="main-content">
-            <div class="card">
-                <h2>📋 รายการสคริปต์ทั้งหมด (ประวัติการแก้ไขลบใน 7 วัน)</h2>
-                <div id="script-list-container">
-                    <p class="loading-text">⏳ กำลังโหลดรายการสคริปต์...</p>
-                </div>
+            <h2 class="page-title">สคริปต์ทั้งหมด</h2>
+            <p id="script-count" class="page-subtitle">กำลังโหลดรายการสคริปต์...</p>
+
+            <div id="history-list-container">
+                <!-- Script Cards loaded via JS -->
             </div>
         </main>
     </div>
 
-    <!-- ดึงไฟล์ตั้งค่าและสคริปต์ควบคุมหน้า History -->
+    <!-- Modal Overlay -->
+    <div id="logout-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <h3>คุณต้องการออกจากระบบใช่ไหม?</h3>
+            <p class="modal-subtext">(ออกจากระบบจะไม่ทำให้ลิงก์หาย ทุกอย่างจะยังใช้งานได้)</p>
+            <div class="modal-buttons">
+                <button id="btn-modal-cancel" class="btn-modal-cancel">ยกเลิก</button>
+                <button id="btn-modal-confirm" class="btn-modal-confirm">ยืนยันออกจากระบบ</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/supabase-config.js"></script>
     <script src="js/history.js"></script>
 </body>
