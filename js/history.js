@@ -1,4 +1,7 @@
-// js/history.js
+// js/history.js - Complete & Updated
+
+const MAIN_SUPABASE_URL = "https://ulsujpqrdesndmuksqkr.supabase.co";
+const MAIN_SUPABASE_ANON_KEY = "sb_publishable_mMHZfdWQC_8jaIQi40QLww_cJJI6scB";
 
 let currentUser = null;
 
@@ -137,7 +140,9 @@ async function loadUserScripts() {
                 : '';
 
             const createdDate = item.created_at ? new Date(item.created_at).toLocaleDateString('th-TH') : 'ไม่ระบุวันที่';
-            const loadstringUrl = `loadstring(game:HttpGet("https://adminmonntshop-prog.github.io/Monnt-hub-upload-script-/${item.id}/raw/main.lua"))()`;
+            
+            // ⚡ ลิงก์ loadstring แบบดึงตรงจาก Supabase REST API
+            const loadstringUrl = `loadstring(game:GetService("HttpService"):JSONDecode(game:HttpGet("${MAIN_SUPABASE_URL}/rest/v1/scripts?id=eq.${item.id}&select=script_code&apikey=${MAIN_SUPABASE_ANON_KEY}"))[1].script_code)()`;
 
             card.innerHTML = `
                 <div class="card-top-tags">
