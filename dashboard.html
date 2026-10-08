@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monnt Script Hub - Dashboard</title>
-    <link rel="stylesheet" href="css/style.css?v=4">
+    <link rel="stylesheet" href="css/style.css?v=6">
     <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
+        <!-- แถบด้านบน Header -->
         <header class="app-header">
             <div class="logo-box">
                 <img src="https://cdn.discordapp.com/avatars/1166763894061154337/04a8a74e6d62b8f8d45e75da263ff3c3.png" alt="Logo" class="logo-img" onerror="this.src='https://ui-avatars.com/api/?name=Monnt+Hub&background=2563eb&color=fff'">
@@ -18,8 +18,7 @@
             </div>
             
             <div class="header-right">
-                <span class="admin-badge">🛡️ Admin</span>
-                <!-- Hamburger Menu -->
+                <!-- ปุ่มเมนู 3 ขีด (Hamburger Menu) -->
                 <div class="menu-wrapper">
                     <button id="btn-menu" class="hamburger-btn" aria-label="Menu">☰</button>
                     <div id="dropdown-menu" class="dropdown-menu" style="display: none;">
@@ -31,24 +30,24 @@
             </div>
         </header>
 
-        <!-- Main Content -->
+        <!-- เนื้อหาหลัก -->
         <main class="main-content">
             <div class="clean-card">
                 <h2>✨ สร้างสคริปต์ใหม่</h2>
 
-                <!-- 1. Script Name -->
+                <!-- 1. ชื่อสคริปต์ -->
                 <div class="form-group">
                     <label for="script-name">ชื่อสคริปต์:</label>
                     <input type="text" id="script-name" placeholder="กรอกชื่อสคริปต์ของคุณ..." required>
                 </div>
 
-                <!-- 2. Lua Code -->
+                <!-- 2. โค้ด Lua -->
                 <div class="form-group">
                     <label for="script-code">เนื้อหาโค้ดสคริปต์ (Lua Code):</label>
                     <textarea id="script-code" rows="10" placeholder="วางโค้ด Lua ของคุณที่นี่..." required></textarea>
                 </div>
 
-                <!-- 3. Password Switch -->
+                <!-- 3. สวิตช์รหัสผ่าน -->
                 <div class="form-group checkbox-group">
                     <label class="switch-container">
                         <input type="checkbox" id="toggle-password">
@@ -62,8 +61,17 @@
                     <input type="text" id="script-password" placeholder="ตั้งรหัสผ่านสำหรับรันสคริปต์...">
                 </div>
 
-                <!-- 4. Status Toggle -->
-                <div class="form-group">
+                <!-- 4. สวิตช์ระบบคีย์ (เพิ่มใหม่ใต้รหัสผ่าน) -->
+                <div class="form-group checkbox-group">
+                    <label class="switch-container">
+                        <input type="checkbox" id="toggle-key-system">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="switch-label">🔑 เปิดใช้งานระบบคีย์ (Key System)</span>
+                </div>
+
+                <!-- 5. ปุ่มเลือกสถานะสคริปต์ -->
+                <div class="form-group" style="margin-top: 18px;">
                     <label>สถานะสคริปต์:</label>
                     <div class="segmented-control">
                         <button type="button" class="segment-btn active" data-status="active">เปิดใช้งาน</button>
@@ -72,10 +80,10 @@
                     </div>
                 </div>
 
-                <!-- Create Button -->
+                <!-- ปุ่มกดยืนยัน -->
                 <button id="btn-create" class="btn-primary-blue">✨ ยืนยันสร้าง link script</button>
 
-                <!-- Result Box -->
+                <!-- ผลลัพธ์สคริปต์ -->
                 <div id="result-box" class="result-card" style="display: none;">
                     <h3>🎉 สคริปต์ของคุณพร้อมใช้งานแล้ว!</h3>
                     <p>คัดลอกคำสั่งด้านล่างไปรันในเกมได้ทันที:</p>
@@ -88,7 +96,7 @@
         </main>
     </div>
 
-    <!-- Modal Overlay -->
+    <!-- 📌 กล่องป๊อปอัปยืนยันการออกจากระบบ -->
     <div id="logout-modal" class="modal-overlay" style="display: none;">
         <div class="modal-box">
             <h3>คุณต้องการออกจากระบบใช่ไหม?</h3>
