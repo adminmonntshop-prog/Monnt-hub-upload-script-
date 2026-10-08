@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monnt Hub - History</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- ดึง Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- แถบด้านบน -->
+        <header class="top-bar">
+            <h1>📜 ประวัติสคริปต์ของคุณ</h1>
+            <div class="user-info">
+                <a href="dashboard.html" class="btn-nav">➕ สร้างสคริปต์ใหม่</a>
+                <button id="btn-logout" class="btn-logout">ออกจากระบบ</button>
+            </div>
+        </header>
+
+        <!-- รายการสคริปต์ -->
+        <main class="main-content">
+            <div class="card">
+                <h2>📋 รายการสคริปต์ทั้งหมด (ประวัติการแก้ไขลบใน 7 วัน)</h2>
+                <div id="script-list-container">
+                    <p class="loading-text">⏳ กำลังโหลดรายการสคริปต์...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ดึงไฟล์ตั้งค่าและสคริปต์ควบคุมหน้า History -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/history.js"></script>
+</body>
+</html>
