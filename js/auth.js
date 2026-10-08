@@ -14,8 +14,8 @@ async function checkAuth() {
 
 checkAuth();
 
-// กำหนด Redirect URL ชัดเจน
-const redirectUrl = "https://adminmonntshop-prog.github.io/script-upload/dashboard.html";
+// ⚡ สร้าง Redirect URL ไปยัง dashboard.html อย่างแม่นยำ 100%
+const redirectUrl = new URL('dashboard.html', window.location.href).href;
 
 // ปุ่ม Google
 const btnGoogle = document.getElementById('btn-google');
