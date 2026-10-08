@@ -3,69 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monnt Hub - Dashboard</title>
+    <title>Monnt Hub Script Hosting</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- ดึง Supabase Library -->
+    <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div class="dashboard-container">
-        <!-- แถบด้านบนแสดงชื่อผู้ใช้และปุ่มออกจากระบบ -->
-        <header class="top-bar">
-            <h1>🚀 Monnt Hub Script Hosting</h1>
-            <div class="user-info">
-                <span id="user-email">กำลังโหลด...</span>
-                <a href="history.html" class="btn-nav">📜 ประวัติสคริปต์</a>
-                <button id="btn-logout" class="btn-logout">ออกจากระบบ</button>
+    <div class="app-container">
+        <!-- แถบด้านบน Header -->
+        <header class="app-header">
+            <div class="logo-box">
+                <span class="rocket-icon">🚀</span>
+                <h1>Monnt Hub Script Hosting</h1>
+            </div>
+            <div class="user-action">
+                <a href="history.html" class="btn-nav">📜 ประวัติ</a>
+                <button id="btn-open-logout-modal" class="btn-logout">🚪 ออกจากระบบ</button>
             </div>
         </header>
 
-        <!-- ฟอร์มสร้างสคริปต์ใหม่ -->
+        <!-- ฟอร์มหลัก -->
         <main class="main-content">
-            <div class="card">
-                <h2>➕ สร้างสคริปต์ใหม่</h2>
-                
+            <div class="neon-card">
+                <h2>✨ สร้างสคริปต์ใหม่</h2>
+
+                <!-- 1. ชื่อสคริปต์ -->
                 <div class="form-group">
-                    <label for="script-name">ชื่อสคริปต์ (ไว้ดู/ค้นหาบนหน้าเว็บ):</label>
-                    <input type="text" id="script-name" placeholder="เช่น Brookhaven Music, Auto Farm..." required>
+                    <label for="script-name">ชื่อสคริปต์:</label>
+                    <input type="text" id="script-name" placeholder="กรอกชื่อสคริปต์ของคุณ..." required>
                 </div>
 
+                <!-- 2. โค้ด Lua -->
                 <div class="form-group">
                     <label for="script-code">เนื้อหาโค้ดสคริปต์ (Lua Code):</label>
                     <textarea id="script-code" rows="10" placeholder="วางโค้ด Lua ของคุณที่นี่..." required></textarea>
                 </div>
 
-                <!-- ตัวเลือกตั้งรหัสผ่าน -->
+                <!-- 3. สวิตช์และรหัสผ่าน -->
                 <div class="form-group checkbox-group">
-                    <input type="checkbox" id="toggle-password">
-                    <label for="toggle-password">🔒 ต้องการตั้งรหัสผ่านล็อกสคริปต์ในเกมไหม?</label>
+                    <label class="switch-container">
+                        <input type="checkbox" id="toggle-password">
+                        <span class="slider"></span>
+                    </label>
+                    <span class="switch-label">🔒 เปิดใช้งานรหัสผ่านล็อกสคริปต์</span>
                 </div>
 
                 <div class="form-group" id="password-input-box" style="display: none;">
-                    <label for="script-password">กำหนดรหัสผ่าน (ใส่ในเกมเพื่อเข้าใช้งาน):</label>
-                    <input type="text" id="script-password" placeholder="กรอกรหัสผ่านที่ต้องการ...">
+                    <label for="script-password">กำหนดรหัสผ่าน:</label>
+                    <input type="text" id="script-password" placeholder="ตั้งรหัสผ่านสำหรับรันสคริปต์...">
                 </div>
 
-                <button id="btn-create" class="btn-primary">✨ ยืนยันสร้างสคริปต์</button>
-            </div>
-
-            <!-- กล่องแสดงผลลัพธ์ลิงก์ที่สร้างได้ -->
-            <div class="card result-card" id="result-box" style="display: none;">
-                <h2>🎉 สร้างสคริปต์สำเร็จ!</h2>
-                <p><strong>Script ID (ถาวร):</strong> <span id="res-id" class="highlight-id"></span></p>
-
+                <!-- 4. ปุ่มเลือกสถานะสคริปต์ (Segmented Control) -->
                 <div class="form-group">
-                    <label>คำสั่งสำหรับนำไปรันใน Roblox (Executor):</label>
-                    <div class="copy-input-group">
-                        <input type="text" id="res-loadstring" readonly>
-                        <button id="btn-copy" class="btn-copy">📋 คัดลอก</button>
+                    <label>สถานะสคริปต์:</label>
+                    <div class="segmented-control">
+                        <button type="button" class="segment-btn active" data-status="active">เปิดใช้งาน</button>
+                        <button type="button" class="segment-btn" data-status="maintenance">ปรับปรุง</button>
+                        <button type="button" class="segment-btn" data-status="disabled">ปิดใช้งาน</button>
                     </div>
+                </div>
+
+                <!-- ปุ่มกดยืนยัน -->
+                <button id="btn-create" class="btn-primary-neon">✨ ยืนยันสร้าง link script</button>
+
+                <!-- ผลลัพธ์สคริปต์ -->
+                <div id="result-box" class="result-card" style="display: none;">
+                    <h3>🎉 สคริปต์ของคุณพร้อมใช้งานแล้ว!</h3>
+                    <p>คัดลอกคำสั่งด้านล่างไปรันในเกมได้ทันที:</p>
+                    <div class="code-box">
+                        <code id="display-script-link"></code>
+                    </div>
+                    <button id="btn-copy-link" class="btn-secondary-neon">📋 คัดลอกลิงก์สคริปต์</button>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- ดึงไฟล์ตั้งค่าและสคริปต์ควบคุมหน้า Dashboard -->
+    <!-- 📌 กล่องป๊อปอัปยืนยันการออกจากระบบ (Overlay Confirmation Modal) -->
+    <div id="logout-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <h3>คุณต้องการออกจากระบบใช่ไหม?</h3>
+            <p class="modal-subtext">(ออกจากระบบจะไม่ทำให้ลิงก์หาย ทุกอย่างจะยังใช้งานได้)</p>
+            <div class="modal-buttons">
+                <button id="btn-modal-cancel" class="btn-modal-cancel">ยกเลิก</button>
+                <button id="btn-modal-confirm" class="btn-modal-confirm">ยืนยันออกจากระบบ</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/supabase-config.js"></script>
     <script src="js/dashboard.js"></script>
 </body>
