@@ -1,48 +1,43 @@
-ขอบคุณสำหรับข้อมูลคอลัมน์ของตาราง **`keys`** ครับ! ข้อมูลชัดเจนมากๆ ครับ 🎯
 // js/dashboard.js
 
 let currentUser = null;
 let selectedStatus = 'active';
 
 document.addEventListener('DOMContentLoaded', () => {
-    initApp();
+    // ⚡ 1. ผูก Event UI ทันที (แก้ปัญหาเมนูเปิดไม่ได้ และ สวิตช์รหัสผ่านไม่เด้ง)
+    setupUIEvents();
+    
+    // ⚡ 2. ตรวจสอบการเข้าสู่ระบบแบบ Async
+    checkAuthAndInit();
 });
 
-async function initApp() {
-    // 1. ตรวจสอบการเข้าสู่ระบบ
-    if (window.supabaseClient) {
-        try {
-            const { data: { session } } = await window.supabaseClient.auth.getSession();
-            if (!session) {
-                window.location.href = "auth.html";
-                return;
-            }
-            currentUser = session.user;
-        } catch (err) {
-            console.error("Auth check error:", err);
-            window.location.href = "auth.html";
-            return;
-        }
-    }
-
-    // 2. ปุ่มเมนู 3 ขีด (Hamburger Menu)
+function setupUIEvents() {
+    // 📌 ควบคุมปุ่มเมนู 3 ขีด (Hamburger Menu)
     const btnMenu = document.getElementById('btn-menu');
     const dropdownMenu = document.getElementById('dropdown-menu');
 
     if (btnMenu && dropdownMenu) {
         btnMenu.addEventListener('click', (e) => {
             e.stopPropagation();
-            dropdownMenu.classList.toggle('show');
+            const isHidden = dropdownMenu.style.display === 'none' || !dropdownMenu.classList.contains('show');
+            if (isHidden) {
+                dropdownMenu.style.display = 'flex';
+                dropdownMenu.classList.add('show');
+            } else {
+                dropdownMenu.style.display = 'none';
+                dropdownMenu.classList.remove('show');
+            }
         });
 
         document.addEventListener('click', (e) => {
-            if (!dropdownMenu.contains(e.target) && e.target !== btnMenu) {
+            if (dropdownMenu && !dropdownMenu.contains(e.target) && e.target !== btnMenu) {
+                dropdownMenu.style.display = 'none';
                 dropdownMenu.classList.remove('show');
             }
         });
     }
 
-    // 3. ควบคุมสวิตช์เปิด-ปิดรหัสผ่าน
+    // 📌 ควบคุมสวิตช์เปิด-ปิดรหัสผ่าน (แสดง/ซ่อน ช่องใส่รหัสผ่าน)
     const togglePassword = document.getElementById('toggle-password');
     const passwordBox = document.getElementById('password-input-box');
 
@@ -52,7 +47,7 @@ async function initApp() {
         });
     }
 
-    // 4. ควบคุม Segmented Control (สถานะสคริปต์)
+    // 📌 ควบคุม Segmented Control (สถานะสคริปต์)
     const segmentBtns = document.querySelectorAll('.segment-btn');
     segmentBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -63,7 +58,7 @@ async function initApp() {
         });
     });
 
-    // 5. ป๊อปอัปออกจากระบบ (Modal Overlay)
+    // 📌 ควบคุมป๊อปอัปออกจากระบบ (Modal Overlay)
     const btnLogoutMenu = document.getElementById('btn-logout-menu');
     const logoutModal = document.getElementById('logout-modal');
     const btnModalCancel = document.getElementById('btn-modal-cancel');
@@ -71,7 +66,10 @@ async function initApp() {
 
     if (btnLogoutMenu && logoutModal) {
         btnLogoutMenu.addEventListener('click', () => {
-            if (dropdownMenu) dropdownMenu.classList.remove('show');
+            if (dropdownMenu) {
+                dropdownMenu.style.display = 'none';
+                dropdownMenu.classList.remove('show');
+            }
             logoutModal.style.display = 'flex';
         });
     }
@@ -91,7 +89,7 @@ async function initApp() {
         });
     }
 
-    // 6. ปุ่มยืนยันสร้างสคริปต์
+    // 📌 ปุ่มยืนยันสร้างสคริปต์
     const btnCreate = document.getElementById('btn-create');
     const toggleKeySystem = document.getElementById('toggle-key-system');
 
@@ -121,9 +119,6 @@ async function initApp() {
             const keySupabaseUrl = "https://ulsujpqrdesndmuksqkr.supabase.co";
             const keyAnonKey = "sb_publishable_mMHZfdWQC_8jaIQi40QLww_cJJI6scB";
 
-            // ========================================================
-            // ⚡ ประกอบร่างโค้ด Lua ตามลำดับ: 🔑 Key System -> 🔒 Password -> 🚀 Main Script
-            // ========================================================
             let compiledLuaCode = rawCodeInput;
 
             // 1. ถ้าเปิดรหัสผ่าน -> ครอบโค้ดหลักก่อน
@@ -207,7 +202,7 @@ ${compiledLuaCode}
 `;
             }
 
-            // 2. ถ้าเปิดระบบคีย์ -> ครอบอยู่นอกสุด (ยิงเช็คกับ Supabase)
+            // 2. ถ้าเปิดระบบคีย์ -> ครอบอยู่นอกสุด
             if (hasKeySystem) {
                 compiledLuaCode = `
 -- ==========================================
@@ -389,6 +384,22 @@ ${compiledLuaCode}
                 alert('❌ เกิดข้อผิดพลาด: ' + err.message);
             }
         });
+    }
+}
+
+async function checkAuthAndInit() {
+    if (window.supabaseClient) {
+        try {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = "auth.html";
+                return;
+            }
+            currentUser = session.user;
+        } catch (err) {
+            console.error("Auth check error:", err);
+            window.location.href = "auth.html";
+        }
     }
 }
 
