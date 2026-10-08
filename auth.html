@@ -6,9 +6,8 @@
     <title>Monnt Hub - Login</title>
     <link rel="stylesheet" href="css/style.css">
     
-    <!-- 1. โหลด Supabase Library จาก CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-    </script>
+    <!-- Supabase Library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="auth-container">
@@ -29,10 +28,8 @@
         </div>
     </div>
 
-    <!-- 2. โหลดไฟล์ตั้งค่า Supabase ก่อน (สร้าง window.supabaseClient) -->
+    <!-- โหลดสคริปต์ตั้งค่าและสคริปต์ล็อกอิน -->
     <script src="js/supabase-config.js"></script>
-    
-    <!-- 3. โหลดสคริปต์ควบคุมปุ่มเข้าสู่ระบบ -->
     <script src="js/auth.js"></script>
 </body>
 </html>
