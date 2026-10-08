@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monnt Hub - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- ดึง Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- แถบด้านบนแสดงชื่อผู้ใช้และปุ่มออกจากระบบ -->
+        <header class="top-bar">
+            <h1>🚀 Monnt Hub Script Hosting</h1>
+            <div class="user-info">
+                <span id="user-email">กำลังโหลด...</span>
+                <a href="history.html" class="btn-nav">📜 ประวัติสคริปต์</a>
+                <button id="btn-logout" class="btn-logout">ออกจากระบบ</button>
+            </div>
+        </header>
+
+        <!-- ฟอร์มสร้างสคริปต์ใหม่ -->
+        <main class="main-content">
+            <div class="card">
+                <h2>➕ สร้างสคริปต์ใหม่</h2>
+                
+                <div class="form-group">
+                    <label for="script-name">ชื่อสคริปต์ (ไว้ดู/ค้นหาบนหน้าเว็บ):</label>
+                    <input type="text" id="script-name" placeholder="เช่น Brookhaven Music, Auto Farm..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="script-code">เนื้อหาโค้ดสคริปต์ (Lua Code):</label>
+                    <textarea id="script-code" rows="10" placeholder="วางโค้ด Lua ของคุณที่นี่..." required></textarea>
+                </div>
+
+                <!-- ตัวเลือกตั้งรหัสผ่าน -->
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="toggle-password">
+                    <label for="toggle-password">🔒 ต้องการตั้งรหัสผ่านล็อกสคริปต์ในเกมไหม?</label>
+                </div>
+
+                <div class="form-group" id="password-input-box" style="display: none;">
+                    <label for="script-password">กำหนดรหัสผ่าน (ใส่ในเกมเพื่อเข้าใช้งาน):</label>
+                    <input type="text" id="script-password" placeholder="กรอกรหัสผ่านที่ต้องการ...">
+                </div>
+
+                <button id="btn-create" class="btn-primary">✨ ยืนยันสร้างสคริปต์</button>
+            </div>
+
+            <!-- กล่องแสดงผลลัพธ์ลิงก์ที่สร้างได้ -->
+            <div class="card result-card" id="result-box" style="display: none;">
+                <h2>🎉 สร้างสคริปต์สำเร็จ!</h2>
+                <p><strong>Script ID (ถาวร):</strong> <span id="res-id" class="highlight-id"></span></p>
+
+                <div class="form-group">
+                    <label>คำสั่งสำหรับนำไปรันใน Roblox (Executor):</label>
+                    <div class="copy-input-group">
+                        <input type="text" id="res-loadstring" readonly>
+                        <button id="btn-copy" class="btn-copy">📋 คัดลอก</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ดึงไฟล์ตั้งค่าและสคริปต์ควบคุมหน้า Dashboard -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
