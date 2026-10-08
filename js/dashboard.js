@@ -1,3 +1,4 @@
+ขอบคุณสำหรับข้อมูลคอลัมน์ของตาราง **`keys`** ครับ! ข้อมูลชัดเจนมากๆ ครับ 🎯
 // js/dashboard.js
 
 let currentUser = null;
@@ -117,6 +118,8 @@ async function initApp() {
 
             const scriptId = generate25DigitId();
             const keySystemUrl = "https://adminmonntshop-prog.github.io/Monnt-Hub-Key/";
+            const keySupabaseUrl = "https://ulsujpqrdesndmuksqkr.supabase.co";
+            const keyAnonKey = "sb_publishable_mMHZfdWQC_8jaIQi40QLww_cJJI6scB";
 
             // ========================================================
             // ⚡ ประกอบร่างโค้ด Lua ตามลำดับ: 🔑 Key System -> 🔒 Password -> 🚀 Main Script
@@ -204,13 +207,17 @@ ${compiledLuaCode}
 `;
             }
 
-            // 2. ถ้าเปิดระบบคีย์ -> ครอบอยู่นอกสุด (ทำงานก่อนรหัสผ่านเสมอ)
+            // 2. ถ้าเปิดระบบคีย์ -> ครอบอยู่นอกสุด (ยิงเช็คกับ Supabase)
             if (hasKeySystem) {
                 compiledLuaCode = `
 -- ==========================================
--- 🔑 STEP 1: KEY SYSTEM VERIFICATION
+-- 🔑 STEP 1: REAL KEY SYSTEM VERIFICATION (SUPABASE)
 -- ==========================================
+local HttpService = game:GetService("HttpService")
 local KEY_URL = "${keySystemUrl}"
+local SUPABASE_URL = "${keySupabaseUrl}"
+local SUPABASE_KEY = "${keyAnonKey}"
+
 local keyVerified = false
 
 local CoreGui = game:GetService("CoreGui")
@@ -291,12 +298,48 @@ GetKeyBtn.MouseButton1Click:Connect(function()
 end)
 
 VerifyBtn.MouseButton1Click:Connect(function()
-    if #KeyInput.Text > 0 then
-        keyVerified = true
-        ScreenGui:Destroy()
-    else
+    local inputKey = KeyInput.Text
+    if #inputKey == 0 then
         KeyInput.Text = ""
         KeyInput.PlaceholderText = "❌ กรุณากรอกคีย์!"
+        return
+    end
+
+    VerifyBtn.Text = "⏳ กำลังเช็ค..."
+
+    local success, result = pcall(function()
+        local reqFunc = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
+        local targetUrl = SUPABASE_URL .. "/rest/v1/keys?apikey=" .. SUPABASE_KEY .. "&key_code=eq." .. inputKey .. "&select=*"
+        
+        if reqFunc then
+            local response = reqFunc({
+                Url = targetUrl,
+                Method = "GET",
+                Headers = {
+                    ["apikey"] = SUPABASE_KEY,
+                    ["Authorization"] = "Bearer " .. SUPABASE_KEY
+                }
+            })
+            return HttpService:JSONDecode(response.Body)
+        else
+            return HttpService:JSONDecode(game:HttpGet(targetUrl))
+        end
+    end)
+
+    if success and type(result) == "table" and #result > 0 then
+        local keyData = result[1]
+        if keyData.status == "active" then
+            keyVerified = true
+            ScreenGui:Destroy()
+        else
+            VerifyBtn.Text = "✅ ตรวจสอบคีย์"
+            KeyInput.Text = ""
+            KeyInput.PlaceholderText = "❌ คีย์ถูกระงับหรือหมดอายุ!"
+        end
+    else
+        VerifyBtn.Text = "✅ ตรวจสอบคีย์"
+        KeyInput.Text = ""
+        KeyInput.PlaceholderText = "❌ ไม่พบ Key นี้ในระบบ!"
     end
 end)
 
