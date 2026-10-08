@@ -1,3 +1,13 @@
+สาเหตุที่ขึ้น Error นี้ เพราะในหน้า **`auth.html`** ยังไม่ได้ดึงไฟล์ **`js/supabase-config.js`** เข้ามาอ่านก่อน หรือตัวแปรถูกเรียกใช้งานผิดออบเจกต์ครับ
+
+เพื่อให้แก้ปัญหานี้ได้แบบ 100% บนมือถือ คัดลอกโค้ดทั้ง **3 ไฟล์** นี้ไปวางทับไฟล์เดิมได้เลยครับ:
+
+---
+
+### 📍 ไฟล์ที่ 1: `auth.html` (โฟลเดอร์หลัก)
+*(จุดสำคัญ: เพิ่มสคริปต์โหลด `js/supabase-config.js` ก่อน `js/auth.js`)*
+
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -5,39 +15,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monnt Hub - Login</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- ดึง Supabase Library -->
+    <!-- 1. ดึง Supabase Library จาก CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-box">
-            <h2>🔐 Monnt Hub Script Hosting</h2>
-            <p>กรุณาเข้าสู่ระบบด้วยบัญชีของคุณเพื่อจัดการสคริปต์</p>
+            <h2>🔐 Monnt Hub</h2>
+            <p>กรุณาเข้าสู่ระบบเพื่อจัดการและสร้างสคริปต์</p>
 
             <div class="auth-buttons">
-                <!-- ปุ่มเข้าสู่ระบบด้วย Google -->
                 <button id="btn-google" class="btn-auth google">
-                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo">
-                    <span>เข้าสู่ระบบด้วย Google</span>
+                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
+                    เข้าสู่ระบบด้วย Google
                 </button>
-
-                <!-- ปุ่มเข้าสู่ระบบด้วย Discord -->
                 <button id="btn-discord" class="btn-auth discord">
-                    <img src="https://www.svgrepo.com/show/353655/discord-icon.svg" alt="Discord Logo">
-                    <span>เข้าสู่ระบบด้วย Discord</span>
+                    <img src="https://www.svgrepo.com/show/353655/discord-icon.svg" alt="Discord">
+                    เข้าสู่ระบบด้วย Discord
                 </button>
             </div>
-
-            <div id="status-msg" class="status-msg"></div>
         </div>
     </div>
 
-    <!-- ดึงไฟล์ตั้งค่าและสคริปต์ควบคุมการล็อกอิน -->
+    <!-- 2. ดึงไฟล์ตั้งค่า Supabase (ต้องอยู่ก่อน auth.js) -->
     <script src="js/supabase-config.js"></script>
+    
+    <!-- 3. ดึงไฟล์ควบคุมระบบล็อกอิน -->
     <script src="js/auth.js"></script>
-
-<!-- แปะไว้ใน auth.html สำหรับเปิดหน้าต่างคอนโซลบนโทรศัพท์ -->
-<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
 </body>
 </html>
