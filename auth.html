@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monnt Hub - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- ดึง Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <h2>🔐 Monnt Hub Script Hosting</h2>
+            <p>กรุณาเข้าสู่ระบบด้วยบัญชีของคุณเพื่อจัดการสคริปต์</p>
+
+            <div class="auth-buttons">
+                <!-- ปุ่มเข้าสู่ระบบด้วย Google -->
+                <button id="btn-google" class="btn-auth google">
+                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Logo">
+                    <span>เข้าสู่ระบบด้วย Google</span>
+                </button>
+
+                <!-- ปุ่มเข้าสู่ระบบด้วย Discord -->
+                <button id="btn-discord" class="btn-auth discord">
+                    <img src="https://www.svgrepo.com/show/353655/discord-icon.svg" alt="Discord Logo">
+                    <span>เข้าสู่ระบบด้วย Discord</span>
+                </button>
+            </div>
+
+            <div id="status-msg" class="status-msg"></div>
+        </div>
+    </div>
+
+    <!-- ดึงไฟล์ตั้งค่าและสคริปต์ควบคุมการล็อกอิน -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
