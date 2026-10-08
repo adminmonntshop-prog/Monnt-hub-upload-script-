@@ -359,3 +359,72 @@ input:checked + .slider:before {
     cursor: pointer;
     box-shadow: 0 0 12px rgba(255, 71, 87, 0.5);
 }
+
+/* 📌 ตกแต่งหน้า Auth / Login */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    width: 100%;
+}
+
+.auth-box {
+    background: #151c2c;
+    border: 1.5px solid #00c8ff;
+    border-radius: 12px;
+    padding: 25px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 200, 255, 0.3);
+}
+
+.auth-box h2 {
+    color: #00c8ff;
+    margin-bottom: 8px;
+}
+
+.auth-box p {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+}
+
+.auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s;
+}
+
+/* 🎯 จุดสำคัญ: ย่อรูปโลโก้ปุ่มให้เหลือขนาด 24px ไม่ให้ขยายยักษ์ */
+.btn-auth img {
+    width: 24px !important;
+    height: 24px !important;
+    object-fit: contain;
+}
+
+.btn-auth.google {
+    background: #ffffff;
+    color: #1f2937;
+}
+
+.btn-auth.discord {
+    background: #5865f2;
+    color: #ffffff;
+}
