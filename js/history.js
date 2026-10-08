@@ -3,37 +3,30 @@
 let currentUser = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    initHistory();
+    setupUIEvents();
+    checkAuthAndLoad();
 });
 
-async function initHistory() {
-    if (window.supabaseClient) {
-        try {
-            const { data: { session } } = await window.supabaseClient.auth.getSession();
-            if (!session) {
-                window.location.href = "auth.html";
-                return;
-            }
-            currentUser = session.user;
-            loadUserScripts();
-        } catch (err) {
-            console.error("Auth check error:", err);
-            window.location.href = "auth.html";
-            return;
-        }
-    }
-
+function setupUIEvents() {
     const btnMenu = document.getElementById('btn-menu');
     const dropdownMenu = document.getElementById('dropdown-menu');
 
     if (btnMenu && dropdownMenu) {
         btnMenu.addEventListener('click', (e) => {
             e.stopPropagation();
-            dropdownMenu.classList.toggle('show');
+            const isHidden = dropdownMenu.style.display === 'none' || !dropdownMenu.classList.contains('show');
+            if (isHidden) {
+                dropdownMenu.style.display = 'flex';
+                dropdownMenu.classList.add('show');
+            } else {
+                dropdownMenu.style.display = 'none';
+                dropdownMenu.classList.remove('show');
+            }
         });
 
         document.addEventListener('click', (e) => {
-            if (!dropdownMenu.contains(e.target) && e.target !== btnMenu) {
+            if (dropdownMenu && !dropdownMenu.contains(e.target) && e.target !== btnMenu) {
+                dropdownMenu.style.display = 'none';
                 dropdownMenu.classList.remove('show');
             }
         });
@@ -46,7 +39,10 @@ async function initHistory() {
 
     if (btnLogoutMenu && logoutModal) {
         btnLogoutMenu.addEventListener('click', () => {
-            if (dropdownMenu) dropdownMenu.classList.remove('show');
+            if (dropdownMenu) {
+                dropdownMenu.style.display = 'none';
+                dropdownMenu.classList.remove('show');
+            }
             logoutModal.style.display = 'flex';
         });
     }
@@ -64,6 +60,23 @@ async function initHistory() {
                 window.location.href = "auth.html";
             }
         });
+    }
+}
+
+async function checkAuthAndLoad() {
+    if (window.supabaseClient) {
+        try {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = "auth.html";
+                return;
+            }
+            currentUser = session.user;
+            loadUserScripts();
+        } catch (err) {
+            console.error("Auth check error:", err);
+            window.location.href = "auth.html";
+        }
     }
 }
 
