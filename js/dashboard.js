@@ -1,55 +1,78 @@
 // js/dashboard.js
 
 let currentUser = null;
+let selectedStatus = 'active'; // ค่าเริ่มต้น: เปิดใช้งาน
 
-// 1. ตรวจสอบ Session การเข้าสู่ระบบ
+// 1. ตรวจสอบการเข้าสู่ระบบ
 async function checkAuth() {
-    const { data: { session } } = await supabase.auth.getSession();
+    if (!window.supabaseClient) return;
+    const { data: { session } } = await window.supabaseClient.auth.getSession();
     if (!session) {
-        // ถ้าไม่ได้ล็อกอิน ให้เด้งกลับหน้า auth.html
         window.location.href = "auth.html";
         return;
     }
     currentUser = session.user;
-    
-    // แสดงชื่อ Email หรือ Display Name บน Header
-    const userEmailSpan = document.getElementById('user-email');
-    if (userEmailSpan) {
-        userEmailSpan.textContent = currentUser.email || currentUser.user_metadata.full_name || "User";
-    }
 }
 
 checkAuth();
 
-// 2. ปุ่ม ออกจากระบบ (Logout)
-const btnLogout = document.getElementById('btn-logout');
-if (btnLogout) {
-    btnLogout.addEventListener('click', async () => {
-        await supabase.auth.signOut();
-        window.location.href = "auth.html";
-    });
-}
-
-// 3. ซ่อน/แสดง ช่องกรอกรหัสผ่าน ตามการติ๊ก Checkbox
+// 2. ควบคุมสวิตช์เปิด-ปิดรหัสผ่าน
 const togglePassword = document.getElementById('toggle-password');
-const passwordInputBox = document.getElementById('password-input-box');
+const passwordBox = document.getElementById('password-input-box');
 
-if (togglePassword && passwordInputBox) {
+if (togglePassword) {
     togglePassword.addEventListener('change', () => {
-        passwordInputBox.style.display = togglePassword.checked ? 'block' : 'none';
+        passwordBox.style.display = togglePassword.checked ? 'block' : 'none';
     });
 }
 
-// 4. ฟังก์ชันสุ่มตัวเลขล้วน ความยาว N หลัก (ค่าเริ่มต้น 25 หลัก)
-function generateNumericID(length = 25) {
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        result += Math.floor(Math.random() * 10);
-    }
-    return result;
+// 3. ควบคุมปุ่ม Segmented Control (สถานะสคริปต์)
+const segmentBtns = document.querySelectorAll('.segment-btn');
+segmentBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        segmentBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedStatus = btn.getAttribute('data-status');
+    });
+});
+
+// 4. ควบคุมป๊อปอัปออกจากระบบ (Modal)
+const btnOpenLogout = document.getElementById('btn-open-logout-modal');
+const logoutModal = document.getElementById('logout-modal');
+const btnModalCancel = document.getElementById('btn-modal-cancel');
+const btnModalConfirm = document.getElementById('btn-modal-confirm');
+
+if (btnOpenLogout) {
+    btnOpenLogout.addEventListener('click', () => {
+        logoutModal.style.display = 'flex'; // แสดงป๊อปอัป
+    });
 }
 
-// 5. ปุ่ม ยืนยันสร้างสคริปต์
+if (btnModalCancel) {
+    btnModalCancel.addEventListener('click', () => {
+        logoutModal.style.display = 'none'; // ปิดป๊อปอัป
+    });
+}
+
+if (btnModalConfirm) {
+    btnModalConfirm.addEventListener('click', async () => {
+        if (window.supabaseClient) {
+            await window.supabaseClient.auth.signOut();
+            window.location.href = "auth.html"; // กลับไปหน้าล็อกอิน
+        }
+    });
+}
+
+// 5. สุ่ม Script ID ตัวเลข 25 หลัก
+function generate25DigitId() {
+    let id = "";
+    for (let i = 0; i < 25; i++) {
+        id += Math.floor(Math.random() * 10).toString();
+    }
+    return id;
+}
+
+// 6. ปุ่มยืนยันสร้างสคริปต์
 const btnCreate = document.getElementById('btn-create');
 if (btnCreate) {
     btnCreate.addEventListener('click', async () => {
@@ -58,25 +81,23 @@ if (btnCreate) {
         const hasPassword = togglePassword.checked;
         const passwordInput = document.getElementById('script-password').value.trim();
 
-        // ตรวจสอบความถูกต้องของข้อมูล
         if (!nameInput || !codeInput) {
-            alert('⚠️ กรุณากรอกชื่อสคริปต์และเนื้อหาโค้ดให้ครบถ้วน!');
+            alert('⚠️ กรุณากรอกชื่อสคริปต์และโค้ด Lua ให้ครบถ้วน!');
             return;
         }
 
         if (hasPassword && !passwordInput) {
-            alert('⚠️ กรุณากรอกรหัสผ่านที่ต้องการตั้งด้วยครับ!');
+            alert('⚠️ กรุณากรอกรหัสผ่านด้วยครับ!');
             return;
         }
 
         btnCreate.disabled = true;
-        btnCreate.textContent = "⏳ กำลังบันทึกข้อมูล...";
+        btnCreate.textContent = "⏳ กำลังสร้างสคริปต์...";
 
-        // สุ่ม Script ID ตัวเลขล้วน 25 หลัก
-        const scriptId = generateNumericID(25);
+        const scriptId = generate25DigitId();
 
-        // บันทึกลงตาราง scripts ใน Supabase
-        const { error } = await supabase
+        // บันทึกลง Supabase
+        const { error } = await window.supabaseClient
             .from('scripts')
             .insert([
                 {
@@ -85,41 +106,28 @@ if (btnCreate) {
                     script_name: nameInput,
                     script_code: codeInput,
                     has_password: hasPassword,
-                    password: hasPassword ? passwordInput : null
+                    password: hasPassword ? passwordInput : null,
+                    status: selectedStatus
                 }
             ]);
 
         btnCreate.disabled = false;
-        btnCreate.textContent = "✨ ยืนยันสร้างสคริปต์";
+        btnCreate.textContent = "✨ ยืนยันสร้าง link script";
 
         if (error) {
-            alert('❌ เกิดข้อผิดพลาดในการบันทึก: ' + error.message);
-            return;
+            alert('❌ เกิดข้อผิดพลาด: ' + error.message);
+        } else {
+            // สร้างลิงก์ loadstring
+            const generatedLink = `loadstring(game:HttpGet("https://adminmonntshop-prog.github.io/script-upload/${scriptId}/raw/main.lua"))()`;
+            
+            document.getElementById('display-script-link').textContent = generatedLink;
+            document.getElementById('result-box').style.display = 'block';
+
+            // ปุ่มกดคัดลอกลิงก์
+            document.getElementById('btn-copy-link').onclick = () => {
+                navigator.clipboard.writeText(generatedLink);
+                alert('📋 คัดลอกลิงก์สคริปต์เรียบร้อยแล้ว!');
+            };
         }
-
-        // แสดงผลลัพธ์ ID และ Loadstring
-        const resultBox = document.getElementById('result-box');
-        const resId = document.getElementById('res-id');
-        const resLoadstring = document.getElementById('res-loadstring');
-
-        resId.textContent = scriptId;
-        
-        // รูปแบบ URL ตามโครงสร้างที่เรากำหนดไว้
-        const loadstringCode = `loadstring(game:HttpGet("https://adminmonntshop-prog.github.io/script-upload/${scriptId}/raw/main.lua"))()`;
-        resLoadstring.value = loadstringCode;
-
-        resultBox.style.display = 'block';
-        resultBox.scrollIntoView({ behavior: 'smooth' });
-    });
-}
-
-// 6. ปุ่มคัดลอกคำสั่ง Loadstring
-const btnCopy = document.getElementById('btn-copy');
-if (btnCopy) {
-    btnCopy.addEventListener('click', () => {
-        const copyInput = document.getElementById('res-loadstring');
-        copyInput.select();
-        navigator.clipboard.writeText(copyInput.value);
-        alert('📋 คัดลอกคำสั่ง Loadstring เรียบร้อยแล้ว!');
     });
 }
