@@ -1,42 +1,51 @@
 // js/auth.js
 
-// 1. ตรวจสอบว่าผู้ใช้ล็อกอินอยู่แล้วหรือไม่
+// 1. ตรวจสอบสถานะการเข้าสู่ระบบ
 async function checkAuth() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-        window.location.href = "dashboard.html";
+    try {
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
+        if (error) console.error("Session Error:", error.message);
+        if (session) {
+            window.location.href = "dashboard.html";
+        }
+    } catch (err) {
+        console.error("CheckAuth Fail:", err);
     }
 }
 
 checkAuth();
 
-// หา URL ปัจจุบันเพื่อให้ Redirect กลับมาที่หน้า dashboard.html บน GitHub Pages ได้ถูกพาธ
+// ค้นหา URL สำหรับ Redirect กลับหน้า dashboard.html บน GitHub Pages
 const redirectUrl = window.location.href.replace(/auth\.html.*$/, 'dashboard.html');
 
-// 2. ปุ่ม Google Login
+// 2. ปุ่มเข้าสู่ระบบด้วย Google
 const btnGoogle = document.getElementById('btn-google');
 if (btnGoogle) {
     btnGoogle.addEventListener('click', async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: redirectUrl
-            }
-        });
-        if (error) alert("เกิดข้อผิดพลาด Google: " + error.message);
+        try {
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: redirectUrl }
+            });
+            if (error) alert("Google Login Error: " + error.message);
+        } catch (err) {
+            alert("Google Exception: " + err.message);
+        }
     });
 }
 
-// 3. ปุ่ม Discord Login
+// 3. ปุ่มเข้าสู่ระบบด้วย Discord
 const btnDiscord = document.getElementById('btn-discord');
 if (btnDiscord) {
     btnDiscord.addEventListener('click', async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'discord',
-            options: {
-                redirectTo: redirectUrl
-            }
-        });
-        if (error) alert("เกิดข้อผิดพลาด Discord: " + error.message);
+        try {
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'discord',
+                options: { redirectTo: redirectUrl }
+            });
+            if (error) alert("Discord Login Error: " + error.message);
+        } catch (err) {
+            alert("Discord Exception: " + err.message);
+        }
     });
 }
