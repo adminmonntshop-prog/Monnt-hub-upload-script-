@@ -6,10 +6,10 @@
     <title>Monnt Hub - Login</title>
     <link rel="stylesheet" href="css/style.css">
     
-    <!-- 1. ดึง Supabase Library จาก CDN -->
+    <!-- 1. โหลด Supabase Library จาก CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- 2. สคริปต์ Eruda สำหรับเปิดหน้าต่าง Console บนโทรศัพท์มือถือ (รูปฟันเฟือง) -->
+    <!-- 📌 ถ้าต้องการลบปุ่มรูปฟันเฟืองออก ให้ลบ 2 บรรทัดด้านล่างนี้ทิ้งได้เลยครับ -->
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>eruda.init();</script>
 </head>
@@ -32,10 +32,10 @@
         </div>
     </div>
 
-    <!-- 3. ดึงไฟล์ตั้งค่า Supabase -->
+    <!-- 2. โหลดไฟล์ตั้งค่า Supabase ก่อน (สร้าง window.supabaseClient) -->
     <script src="js/supabase-config.js"></script>
     
-    <!-- 4. ดึงไฟล์ควบคุมระบบล็อกอิน -->
+    <!-- 3. โหลดสคริปต์ควบคุมปุ่มเข้าสู่ระบบ -->
     <script src="js/auth.js"></script>
 </body>
 </html>
