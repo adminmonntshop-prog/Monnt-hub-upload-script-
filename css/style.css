@@ -1,98 +1,316 @@
-/* css/style.css */
+/* css/style.css - ธีมโหมดมืด นีออนฟ้า */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Kanit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
     background-color: #0b0f19;
     color: #e2e8f0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 650px;
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0, 200, 255, 0.2);
+    margin-bottom: 20px;
+}
+
+.logo-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rocket-icon {
+    font-size: 1.8rem;
+}
+
+.logo-box h1 {
+    font-size: 1.2rem;
+    color: #00c8ff;
+    text-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+}
+
+.user-action {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-nav, .btn-logout {
+    background: #1e293b;
+    color: #00c8ff;
+    border: 1px solid #00c8ff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+}
+
+.btn-logout {
+    color: #ff5555;
+    border-color: #ff5555;
+}
+
+.btn-nav:hover {
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.4);
+}
+
+.btn-logout:hover {
+    box-shadow: 0 0 10px rgba(255, 85, 85, 0.4);
+}
+
+/* Card หลักขอบเรืองแสง */
+.neon-card {
+    background: #151c2c;
+    border: 1.5px solid #00c8ff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 0 15px rgba(0, 200, 255, 0.25);
+}
+
+.neon-card h2 {
+    color: #00c8ff;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 12px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border 0.3s;
+}
+
+input[type="text"]:focus, textarea:focus {
+    border-color: #00c8ff;
+    box-shadow: 0 0 8px rgba(0, 200, 255, 0.3);
+}
+
+/* Switch */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.switch-container {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+}
+
+.switch-container input { display: none; }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #334155;
+    transition: .3s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #00c8ff;
+    box-shadow: 0 0 8px rgba(0, 200, 255, 0.5);
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+.switch-label {
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
+
+/* Segmented Control */
+.segmented-control {
+    display: flex;
+    background: #0f172a;
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+}
+
+.segment-btn {
+    flex: 1;
+    padding: 8px;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.3s;
+}
+
+.segment-btn.active {
+    background: #00c8ff;
+    color: #0b0f19;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(0, 200, 255, 0.4);
+}
+
+/* Buttons */
+.btn-primary-neon {
+    width: 100%;
+    padding: 12px;
+    background: #00c8ff;
+    color: #0b0f19;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(0, 200, 255, 0.4);
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.btn-primary-neon:hover {
+    background: #33d6ff;
+    box-shadow: 0 0 18px rgba(0, 200, 255, 0.7);
+}
+
+/* Result Card */
+.result-card {
+    margin-top: 20px;
+    padding: 15px;
+    background: #0f172a;
+    border: 1px dashed #00c8ff;
+    border-radius: 8px;
+}
+
+.result-card h3 { color: #00c8ff; font-size: 1rem; margin-bottom: 5px; }
+.result-card p { font-size: 0.85rem; color: #94a3b8; margin-bottom: 10px; }
+
+.code-box {
+    background: #050811;
+    padding: 10px;
+    border-radius: 6px;
+    word-break: break-all;
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: #38bdf8;
+    margin-bottom: 10px;
+}
+
+.btn-secondary-neon {
+    width: 100%;
+    padding: 8px;
+    background: transparent;
+    color: #00c8ff;
+    border: 1px solid #00c8ff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* 📌 Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(5, 8, 17, 0.8);
+    backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    padding: 20px;
+    z-index: 999;
 }
 
-/* 🔐 หน้า Auth / Login Box */
-.auth-container {
-    width: 100%;
-    max-width: 400px;
-}
-
-.auth-box {
+.modal-box {
     background: #151c2c;
-    border: 1px solid #1e293b;
+    border: 1.5px solid #00c8ff;
     border-radius: 12px;
-    padding: 30px 25px;
+    padding: 22px;
+    width: 90%;
+    max-width: 380px;
     text-align: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px rgba(0, 200, 255, 0.4);
 }
 
-.auth-box h2 {
-    color: #00c8ff;
-    font-size: 1.5rem;
+.modal-box h3 {
+    color: #ffffff;
+    font-size: 1.1rem;
     margin-bottom: 8px;
 }
 
-.auth-box p {
+.modal-subtext {
+    font-size: 0.8rem;
     color: #94a3b8;
-    font-size: 0.9rem;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
-.auth-buttons {
+.modal-buttons {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 
-.btn-auth {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    width: 100%;
-    padding: 12px 16px;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: bold;
+.btn-modal-cancel {
+    flex: 1;
+    padding: 10px;
+    background: #1e293b;
+    border: 1px solid #00c8ff;
+    color: #00c8ff;
+    border-radius: 6px;
     cursor: pointer;
-    transition: all 0.2s ease;
 }
 
-.btn-auth img {
-    width: 20px;
-    height: 20px;
-}
-
-/* ปุ่ม Google */
-.btn-auth.google {
-    background-color: #ffffff;
-    color: #1e293b;
-}
-
-.btn-auth.google:hover {
-    background-color: #f1f5f9;
-    transform: translateY(-2px);
-}
-
-/* ปุ่ม Discord */
-.btn-auth.discord {
-    background-color: #5865f2;
-    color: #ffffff;
-}
-
-.btn-auth.discord:hover {
-    background-color: #4752c4;
-    transform: translateY(-2px);
-}
-
-.status-msg {
-    margin-top: 15px;
-    font-size: 0.85rem;
-    color: #ff5050;
+.btn-modal-confirm {
+    flex: 1;
+    padding: 10px;
+    background: #ff4757;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.4);
 }
