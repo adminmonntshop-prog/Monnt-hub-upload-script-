@@ -3,8 +3,7 @@
 async function checkAuth() {
     try {
         if (!window.supabaseClient) return;
-        const { data: { session }, error } = await window.supabaseClient.auth.getSession();
-        if (error) console.error("Session Error:", error.message);
+        const { data: { session } } = await window.supabaseClient.auth.getSession();
         if (session) {
             window.location.href = "dashboard.html";
         }
@@ -15,18 +14,14 @@ async function checkAuth() {
 
 checkAuth();
 
-// คำนวณ Redirect URL บน GitHub Pages
-const redirectUrl = window.location.origin + window.location.pathname.replace(/auth\.html.*$/, 'dashboard.html');
+// กำหนด Redirect URL ชัดเจน
+const redirectUrl = "https://adminmonntshop-prog.github.io/script-upload/dashboard.html";
 
 // ปุ่ม Google
 const btnGoogle = document.getElementById('btn-google');
 if (btnGoogle) {
     btnGoogle.addEventListener('click', async () => {
         try {
-            if (!window.supabaseClient) {
-                alert("❌ ไม่สามารถเชื่อมต่อ Supabase ได้ กรุณารีเฟรชหน้าเว็บ");
-                return;
-            }
             const { error } = await window.supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
                 options: { redirectTo: redirectUrl }
@@ -43,10 +38,6 @@ const btnDiscord = document.getElementById('btn-discord');
 if (btnDiscord) {
     btnDiscord.addEventListener('click', async () => {
         try {
-            if (!window.supabaseClient) {
-                alert("❌ ไม่สามารถเชื่อมต่อ Supabase ได้ กรุณารีเฟรชหน้าเว็บ");
-                return;
-            }
             const { error } = await window.supabaseClient.auth.signInWithOAuth({
                 provider: 'discord',
                 options: { redirectTo: redirectUrl }
@@ -56,4 +47,4 @@ if (btnDiscord) {
             alert("❌ เกิดข้อผิดพลาด: " + err.message);
         }
     });
-            }
+}
