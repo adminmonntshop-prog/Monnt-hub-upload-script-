@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monnt Hub - Login</title>
-    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- ⚡ ใส่ ?v=1 บังคับให้เบราว์เซอร์ดึง CSS ใหม่ทันทีโดยไม่ติดแคชเก่า -->
+    <link rel="stylesheet" href="css/style.css?v=1">
     
     <!-- Supabase Library CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -16,12 +18,15 @@
             <p>กรุณาเข้าสู่ระบบเพื่อจัดการและสร้างสคริปต์</p>
 
             <div class="auth-buttons">
+                <!-- ปุ่ม Google -->
                 <button id="btn-google" class="btn-auth google">
-                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google">
                     เข้าสู่ระบบด้วย Google
                 </button>
+                
+                <!-- ปุ่ม Discord (ใช้ CDN ใหม่ที่ติดชัวร์ 100%) -->
                 <button id="btn-discord" class="btn-auth discord">
-                    <img src="https://www.svgrepo.com/show/353655/discord-icon.svg" alt="Discord">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/discord/discord-original.svg" alt="Discord">
                     เข้าสู่ระบบด้วย Discord
                 </button>
             </div>
