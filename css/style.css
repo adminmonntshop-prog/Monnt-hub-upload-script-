@@ -28,6 +28,7 @@ body {
     padding: 15px 0;
     border-bottom: 1px solid rgba(0, 200, 255, 0.2);
     margin-bottom: 20px;
+    position: relative;
 }
 
 .logo-box {
@@ -41,39 +42,80 @@ body {
 }
 
 .logo-box h1 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: #00c8ff;
     text-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
 }
 
-.user-action {
-    display: flex;
-    gap: 8px;
+/* Hamburger Menu Wrapper */
+.menu-wrapper {
+    position: relative;
 }
 
-.btn-nav, .btn-logout {
-    background: #1e293b;
+.hamburger-btn {
+    background: #151c2c;
     color: #00c8ff;
-    border: 1px solid #00c8ff;
-    padding: 6px 12px;
-    border-radius: 6px;
+    border: 1.5px solid #00c8ff;
+    font-size: 1.4rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
     cursor: pointer;
-    text-decoration: none;
-    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 8px rgba(0, 200, 255, 0.3);
     transition: all 0.3s;
 }
 
-.btn-logout {
+.hamburger-btn:active {
+    transform: scale(0.95);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: #151c2c;
+    border: 1.5px solid #00c8ff;
+    border-radius: 10px;
+    width: 180px;
+    padding: 8px 0;
+    box-shadow: 0 0 15px rgba(0, 200, 255, 0.4);
+    z-index: 100;
+    flex-direction: column;
+}
+
+.dropdown-menu.show {
+    display: flex !important;
+}
+
+.menu-item {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    color: #e2e8f0;
+    text-decoration: none;
+    font-size: 0.9rem;
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.menu-item:hover {
+    background: rgba(0, 200, 255, 0.15);
+    color: #00c8ff;
+}
+
+.menu-item.logout-item {
     color: #ff5555;
-    border-color: #ff5555;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.btn-nav:hover {
-    box-shadow: 0 0 10px rgba(0, 200, 255, 0.4);
-}
-
-.btn-logout:hover {
-    box-shadow: 0 0 10px rgba(255, 85, 85, 0.4);
+.menu-item.logout-item:hover {
+    background: rgba(255, 85, 85, 0.15);
 }
 
 /* Card หลักขอบเรืองแสง */
@@ -177,25 +219,28 @@ input:checked + .slider:before {
     padding: 4px;
     border-radius: 8px;
     border: 1px solid #334155;
+    gap: 4px;
 }
 
 .segment-btn {
     flex: 1;
-    padding: 8px;
+    padding: 10px 4px;
     background: transparent;
     border: none;
     color: #94a3b8;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.85rem;
-    transition: all 0.3s;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    outline: none;
 }
 
 .segment-btn.active {
-    background: #00c8ff;
-    color: #0b0f19;
+    background: #00c8ff !important;
+    color: #0b0f19 !important;
     font-weight: bold;
-    box-shadow: 0 0 8px rgba(0, 200, 255, 0.4);
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
 }
 
 /* Buttons */
@@ -257,12 +302,12 @@ input:checked + .slider:before {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(5, 8, 17, 0.8);
+    background: rgba(5, 8, 17, 0.85);
     backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 999;
+    z-index: 1000;
 }
 
 .modal-box {
@@ -273,7 +318,7 @@ input:checked + .slider:before {
     width: 90%;
     max-width: 380px;
     text-align: center;
-    box-shadow: 0 0 20px rgba(0, 200, 255, 0.4);
+    box-shadow: 0 0 25px rgba(0, 200, 255, 0.4);
 }
 
 .modal-box h3 {
@@ -312,5 +357,5 @@ input:checked + .slider:before {
     font-weight: bold;
     border-radius: 6px;
     cursor: pointer;
-    box-shadow: 0 0 10px rgba(255, 71, 87, 0.4);
+    box-shadow: 0 0 12px rgba(255, 71, 87, 0.5);
 }
