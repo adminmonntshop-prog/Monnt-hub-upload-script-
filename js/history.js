@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initHistory() {
-    // 1. Check Auth Status
     if (window.supabaseClient) {
         try {
             const { data: { session } } = await window.supabaseClient.auth.getSession();
@@ -24,7 +23,6 @@ async function initHistory() {
         }
     }
 
-    // 2. Hamburger Menu Control
     const btnMenu = document.getElementById('btn-menu');
     const dropdownMenu = document.getElementById('dropdown-menu');
 
@@ -41,7 +39,6 @@ async function initHistory() {
         });
     }
 
-    // 3. Logout Modal Control
     const btnLogoutMenu = document.getElementById('btn-logout-menu');
     const logoutModal = document.getElementById('logout-modal');
     const btnModalCancel = document.getElementById('btn-modal-cancel');
@@ -70,7 +67,6 @@ async function initHistory() {
     }
 }
 
-// Load scripts from Supabase
 async function loadUserScripts() {
     const listContainer = document.getElementById('history-list-container');
     const scriptCountEl = document.getElementById('script-count');
@@ -112,7 +108,6 @@ async function loadUserScripts() {
             const card = document.createElement('div');
             card.className = 'script-card-item';
 
-            // Status Badge
             let statusBadge = '<span class="status-pill active">🟢 เปิดใช้งาน</span>';
             if (item.status === 'maintenance') {
                 statusBadge = '<span class="status-pill maintenance">🟠 ปรับปรุง</span>';
@@ -120,10 +115,13 @@ async function loadUserScripts() {
                 statusBadge = '<span class="status-pill disabled">🔴 ปิดใช้งาน</span>';
             }
 
-            // Password Badge
             const passBadge = item.has_password 
                 ? '<span class="tag-pill-blue">🔒 มีรหัสผ่าน</span>' 
                 : '<span class="tag-pill-blue" style="background: #f1f5f9; color: #64748b;">🔓 ไม่มีรหัสผ่าน</span>';
+
+            const keyBadge = item.has_key_system
+                ? '<span class="tag-pill-blue" style="background: #fef3c7; color: #b45309;">🔑 ใช้ระบบคีย์</span>'
+                : '';
 
             const createdDate = item.created_at ? new Date(item.created_at).toLocaleDateString('th-TH') : 'ไม่ระบุวันที่';
             const loadstringUrl = `loadstring(game:HttpGet("https://adminmonntshop-prog.github.io/Monnt-hub-upload-script-/${item.id}/raw/main.lua"))()`;
@@ -132,6 +130,7 @@ async function loadUserScripts() {
                 <div class="card-top-tags">
                     ${statusBadge}
                     ${passBadge}
+                    ${keyBadge}
                 </div>
                 <h3 class="script-item-title">${escapeHtml(item.script_name)}</h3>
                 <div class="script-item-meta">
@@ -154,7 +153,6 @@ async function loadUserScripts() {
             listContainer.appendChild(card);
         });
 
-        // Copy Event
         document.querySelectorAll('.btn-copy').forEach(btn => {
             btn.addEventListener('click', () => {
                 const link = btn.getAttribute('data-link');
@@ -163,7 +161,6 @@ async function loadUserScripts() {
             });
         });
 
-        // Delete Event
         document.querySelectorAll('.btn-delete').forEach(btn => {
             btn.addEventListener('click', async () => {
                 const scriptId = btn.getAttribute('data-id');
