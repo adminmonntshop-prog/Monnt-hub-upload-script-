@@ -1,4 +1,4 @@
-/* css/style.css - ธีมสว่าง สีฟ้า-ขาว */
+/* css/style.css - ธีมสว่าง สีฟ้า-ขาว สไตล์ภาพ 13052.jpg */
 :root {
     --bg-main: #f8fafc;
     --card-bg: #ffffff;
@@ -74,19 +74,6 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-.admin-badge {
-    background-color: #0f172a;
-    color: #ffffff;
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 6px 14px;
-    border-radius: var(--radius-full);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: var(--shadow-sm);
 }
 
 .hamburger-btn {
@@ -395,7 +382,8 @@ input:checked + .slider:before {
 
 .card-top-tags {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
     align-items: center;
     margin-bottom: 12px;
 }
@@ -569,5 +557,4 @@ input:checked + .slider:before {
     border-radius: var(--radius-md);
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
-    }
-        
+}
