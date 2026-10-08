@@ -1,10 +1,13 @@
-// js/dashboard.js
+// js/dashboard.js - Complete & Updated
+
+const MAIN_SUPABASE_URL = "https://ulsujpqrdesndmuksqkr.supabase.co";
+const MAIN_SUPABASE_ANON_KEY = "sb_publishable_mMHZfdWQC_8jaIQi40QLww_cJJI6scB";
 
 let currentUser = null;
 let selectedStatus = 'active';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // ⚡ 1. ผูก Event UI ทันที (แก้ปัญหาเมนูเปิดไม่ได้ และ สวิตช์รหัสผ่านไม่เด้ง)
+    // ⚡ 1. ผูก Event UI ทันที (เพื่อให้ปุ่มเมนู และสวิตช์รหัสผ่านทำงานทันทีโดยไม่ต้องรอ Auth)
     setupUIEvents();
     
     // ⚡ 2. ตรวจสอบการเข้าสู่ระบบแบบ Async
@@ -202,7 +205,7 @@ ${compiledLuaCode}
 `;
             }
 
-            // 2. ถ้าเปิดระบบคีย์ -> ครอบอยู่นอกสุด
+            // 2. ถ้าเปิดระบบคีย์ -> ครอบอยู่นอกสุด (ยิงเช็คกับ Supabase REST API)
             if (hasKeySystem) {
                 compiledLuaCode = `
 -- ==========================================
@@ -256,7 +259,7 @@ BoxCorner.CornerRadius = UDim.new(0, 8)
 BoxCorner.Parent = KeyInput
 
 local GetKeyBtn = Instance.new("TextButton")
-GetKeyBtn.Size = UDim2.new(0.4, 0, 0, 36)
+GetKeyBtn.Size = UDim2.new(0, 130, 0, 36)
 GetKeyBtn.Position = UDim2.new(0.075, 0, 0.55, 0)
 GetKeyBtn.Text = "📋 คัดลอกลิงก์เก็ตคีย์"
 GetKeyBtn.TextColor3 = Color3.fromRGB(37, 99, 235)
@@ -270,8 +273,8 @@ GetKeyCorner.CornerRadius = UDim.new(0, 8)
 GetKeyCorner.Parent = GetKeyBtn
 
 local VerifyBtn = Instance.new("TextButton")
-VerifyBtn.Size = UDim2.new(0.42, 0, 0, 36)
-VerifyBtn.Position = UDim2.new(0.505, 0, 0.55, 0)
+VerifyBtn.Size = UDim2.new(0, 130, 0, 36)
+VerifyBtn.Position = UDim2.new(0.52, 0, 0.55, 0)
 VerifyBtn.Text = "✅ ตรวจสอบคีย์"
 VerifyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 VerifyBtn.BackgroundColor3 = Color3.fromRGB(37, 99, 235)
@@ -368,7 +371,8 @@ ${compiledLuaCode}
                 if (error) {
                     alert('❌ เกิดข้อผิดพลาด: ' + error.message);
                 } else {
-                    const generatedLink = `loadstring(game:HttpGet("https://adminmonntshop-prog.github.io/Monnt-hub-upload-script-/${scriptId}/raw/main.lua"))()`;
+                    // ⚡ ลิงก์ loadstring แบบดึงตรงจาก Supabase REST API
+                    const generatedLink = `loadstring(game:GetService("HttpService"):JSONDecode(game:HttpGet("${MAIN_SUPABASE_URL}/rest/v1/scripts?id=eq.${scriptId}&select=script_code&apikey=${MAIN_SUPABASE_ANON_KEY}"))[1].script_code)()`;
                     
                     document.getElementById('display-script-link').textContent = generatedLink;
                     document.getElementById('result-box').style.display = 'block';
