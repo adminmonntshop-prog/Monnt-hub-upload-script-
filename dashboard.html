@@ -16,9 +16,15 @@
                 <span class="rocket-icon">🚀</span>
                 <h1>Monnt Hub Script Hosting</h1>
             </div>
-            <div class="user-action">
-                <a href="history.html" class="btn-nav">📜 ประวัติ</a>
-                <button id="btn-open-logout-modal" class="btn-logout">🚪 ออกจากระบบ</button>
+            
+            <!-- ปุ่มเมนู 3 ขีด (Hamburger Menu) -->
+            <div class="menu-wrapper">
+                <button id="btn-menu" class="hamburger-btn" aria-label="Menu">☰</button>
+                <div id="dropdown-menu" class="dropdown-menu" style="display: none;">
+                    <a href="dashboard.html" class="menu-item">➕ สร้างสคริปต์</a>
+                    <a href="history.html" class="menu-item">📜 ดูประวัติ</a>
+                    <button id="btn-logout-menu" class="menu-item logout-item">🚪 ออกจากระบบ</button>
+                </div>
             </div>
         </header>
 
