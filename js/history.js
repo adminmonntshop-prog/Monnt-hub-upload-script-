@@ -1,124 +1,198 @@
-ต่อกันที่ **ขั้นตอนที่ 8: เขียนสคริปต์ดึงประวัติมาแสดงและจัดการสคริปต์ (`js/history.js`)** ครับ!
 // js/history.js
 
 let currentUser = null;
 
-// 1. ตรวจสอบ Session การเข้าสู่ระบบ
-async function checkAuth() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-        window.location.href = "auth.html";
-        return;
+document.addEventListener('DOMContentLoaded', () => {
+    initHistory();
+});
+
+async function initHistory() {
+    // 1. Check Auth Status
+    if (window.supabaseClient) {
+        try {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = "auth.html";
+                return;
+            }
+            currentUser = session.user;
+            loadUserScripts();
+        } catch (err) {
+            console.error("Auth check error:", err);
+            window.location.href = "auth.html";
+            return;
+        }
     }
-    currentUser = session.user;
-    loadUserScripts();
+
+    // 2. Hamburger Menu Control
+    const btnMenu = document.getElementById('btn-menu');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+
+    if (btnMenu && dropdownMenu) {
+        btnMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!dropdownMenu.contains(e.target) && e.target !== btnMenu) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+    }
+
+    // 3. Logout Modal Control
+    const btnLogoutMenu = document.getElementById('btn-logout-menu');
+    const logoutModal = document.getElementById('logout-modal');
+    const btnModalCancel = document.getElementById('btn-modal-cancel');
+    const btnModalConfirm = document.getElementById('btn-modal-confirm');
+
+    if (btnLogoutMenu && logoutModal) {
+        btnLogoutMenu.addEventListener('click', () => {
+            if (dropdownMenu) dropdownMenu.classList.remove('show');
+            logoutModal.style.display = 'flex';
+        });
+    }
+
+    if (btnModalCancel && logoutModal) {
+        btnModalCancel.addEventListener('click', () => {
+            logoutModal.style.display = 'none';
+        });
+    }
+
+    if (btnModalConfirm) {
+        btnModalConfirm.addEventListener('click', async () => {
+            if (window.supabaseClient) {
+                await window.supabaseClient.auth.signOut();
+                window.location.href = "auth.html";
+            }
+        });
+    }
 }
 
-checkAuth();
-
-// 2. ปุ่ม ออกจากระบบ (Logout)
-const btnLogout = document.getElementById('btn-logout');
-if (btnLogout) {
-    btnLogout.addEventListener('click', async () => {
-        await supabase.auth.signOut();
-        window.location.href = "auth.html";
-    });
-}
-
-// 3. โหลดรายการสคริปต์ของผู้ใช้คนนี้
+// Load scripts from Supabase
 async function loadUserScripts() {
-    const container = document.getElementById('script-list-container');
-    if (!container) return;
+    const listContainer = document.getElementById('history-list-container');
+    const scriptCountEl = document.getElementById('script-count');
 
-    // ดึงสคริปต์เฉพาะของผู้ใช้คนนี้ (RLS จะช่วยกรองอีกชั้น)
-    const { data: scripts, error } = await supabase
-        .from('scripts')
-        .select('*')
-        .eq('user_id', currentUser.id)
-        .order('created_at', { ascending: false });
+    if (!listContainer) return;
 
-    if (error) {
-        container.innerHTML = `<p class="status-msg">❌ เกิดข้อผิดพลาดในการโหลดข้อมูล: ${error.message}</p>`;
-        return;
-    }
+    listContainer.innerHTML = '<p style="text-align: center; color: #64748b; padding: 20px;">⏳ กำลังโหลดประวัติสคริปต์...</p>';
 
-    if (!scripts || scripts.length === 0) {
-        container.innerHTML = '<p class="empty-text">📂 คุณยังไม่มีสคริปต์ที่สร้างไว้ในระบบ</p>';
-        return;
-    }
+    try {
+        const { data: scripts, error } = await window.supabaseClient
+            .from('scripts')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .order('created_at', { ascending: false });
 
-    container.innerHTML = ''; // ล้างข้อความกำลังโหลด
+        if (error) {
+            listContainer.innerHTML = `<p style="text-align: center; color: #ef4444; padding: 20px;">❌ โหลดข้อมูลไม่สำเร็จ: ${error.message}</p>`;
+            return;
+        }
 
-    scripts.forEach(script => {
-        const scriptCard = document.createElement('div');
-        scriptCard.className = 'script-item-card';
+        if (scriptCountEl) {
+            scriptCountEl.textContent = `พบ ${scripts ? scripts.length : 0} Script`;
+        }
 
-        const loadstringCode = `loadstring(game:HttpGet("https://adminmonntshop-prog.github.io/script-upload/${script.id}/raw/main.lua"))()`;
-        
-        // คำนวณวันหมดอายุประวัติ (7 วันนับจากวันที่สร้าง/อัปเดต)
-        const createdDate = new Date(script.created_at);
-        const now = new Date();
-        const daysPassed = Math.floor((now - createdDate) / (1000 * 60 * 60 * 24));
-        const daysRemaining = Math.max(0, 7 - daysPassed);
-
-        scriptCard.innerHTML = `
-            <div class="script-header">
-                <h3>${escapeHtml(script.script_name)}</h3>
-                <span class="badge-pwd">${script.has_password ? '🔒 มีรหัสผ่าน' : '🔓 ไม่มีรหัสผ่าน'}</span>
-            </div>
-            <p class="script-id-text"><strong>Script ID:</strong> <code>${script.id}</code></p>
-            <p class="script-date">📅 สร้างเมื่อ: ${createdDate.toLocaleString('th-TH')}</p>
-            <p class="script-history-info">⏱️ ประวัติการแก้ไขบันทึกไว้คงเหลือ: <strong>${daysRemaining} วัน</strong> (ตัวสคริปต์และลิงก์จะอยู่ถาวร)</p>
-
-            <div class="form-group" style="margin-top: 10px;">
-                <div class="copy-input-group">
-                    <input type="text" value="${escapeHtml(loadstringCode)}" readonly id="input-${script.id}">
-                    <button class="btn-copy" onclick="copyLoadstring('${script.id}')">📋 คัดลอก</button>
+        if (!scripts || scripts.length === 0) {
+            listContainer.innerHTML = `
+                <div class="clean-card" style="text-align: center; padding: 40px 20px;">
+                    <p style="font-size: 2rem; margin-bottom: 10px;">📜</p>
+                    <h3 style="color: #0f172a; margin-bottom: 6px;">ยังไม่มีประวัติสคริปต์</h3>
+                    <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 16px;">คุณยังไม่ได้สร้างสคริปต์ใดๆ ในระบบ</p>
+                    <a href="dashboard.html" class="btn-primary-blue" style="display: inline-block; width: auto; text-decoration: none; padding: 10px 20px;">➕ สร้างสคริปต์ใหม่</a>
                 </div>
-            </div>
+            `;
+            return;
+        }
 
-            <div class="action-buttons">
-                <a href="edit.html?id=${script.id}" class="btn-edit">✏️ แก้ไขสคริปต์</a>
-                <button class="btn-delete" onclick="deleteScript('${script.id}')">🗑️ ลบสคริปต์</button>
-            </div>
-        `;
+        listContainer.innerHTML = '';
+        scripts.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'script-card-item';
 
-        container.appendChild(scriptCard);
-    });
+            // Status Badge
+            let statusBadge = '<span class="status-pill active">🟢 เปิดใช้งาน</span>';
+            if (item.status === 'maintenance') {
+                statusBadge = '<span class="status-pill maintenance">🟠 ปรับปรุง</span>';
+            } else if (item.status === 'disabled') {
+                statusBadge = '<span class="status-pill disabled">🔴 ปิดใช้งาน</span>';
+            }
+
+            // Password Badge
+            const passBadge = item.has_password 
+                ? '<span class="tag-pill-blue">🔒 มีรหัสผ่าน</span>' 
+                : '<span class="tag-pill-blue" style="background: #f1f5f9; color: #64748b;">🔓 ไม่มีรหัสผ่าน</span>';
+
+            const createdDate = item.created_at ? new Date(item.created_at).toLocaleDateString('th-TH') : 'ไม่ระบุวันที่';
+            const loadstringUrl = `loadstring(game:HttpGet("https://adminmonntshop-prog.github.io/Monnt-hub-upload-script-/${item.id}/raw/main.lua"))()`;
+
+            card.innerHTML = `
+                <div class="card-top-tags">
+                    ${statusBadge}
+                    ${passBadge}
+                </div>
+                <h3 class="script-item-title">${escapeHtml(item.script_name)}</h3>
+                <div class="script-item-meta">
+                    <span>🆔 ID: ${item.id}</span>
+                    <span>📅 ${createdDate}</span>
+                </div>
+                <div class="script-item-code-preview">
+                    <code>${escapeHtml(item.script_code.substring(0, 100))}${item.script_code.length > 100 ? '...' : ''}</code>
+                </div>
+                <div class="card-action-btns">
+                    <button class="btn-card-primary btn-copy" data-link="${escapeHtml(loadstringUrl)}">
+                        📋 คัดลอกลิงก์
+                    </button>
+                    <button class="btn-card-danger btn-delete" data-id="${item.id}">
+                        🗑️ ลบ
+                    </button>
+                </div>
+            `;
+
+            listContainer.appendChild(card);
+        });
+
+        // Copy Event
+        document.querySelectorAll('.btn-copy').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const link = btn.getAttribute('data-link');
+                navigator.clipboard.writeText(link);
+                alert('📋 คัดลอกลิงก์สคริปต์เรียบร้อยแล้ว!');
+            });
+        });
+
+        // Delete Event
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const scriptId = btn.getAttribute('data-id');
+                if (confirm('⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบสคริปต์นี้?')) {
+                    const { error } = await window.supabaseClient
+                        .from('scripts')
+                        .delete()
+                        .eq('id', scriptId);
+
+                    if (error) {
+                        alert('❌ ไม่สามารถลบสคริปต์ได้: ' + error.message);
+                    } else {
+                        alert('🗑️ ลบสคริปต์เรียบร้อยแล้ว!');
+                        loadUserScripts();
+                    }
+                }
+            });
+        });
+
+    } catch (err) {
+        listContainer.innerHTML = `<p style="text-align: center; color: #ef4444; padding: 20px;">❌ เกิดข้อผิดพลาด: ${err.message}</p>`;
+    }
 }
-
-// ฟังก์ชันคัดลอกคำสั่ง Loadstring
-window.copyLoadstring = function(id) {
-    const input = document.getElementById(`input-${id}`);
-    if (input) {
-        input.select();
-        navigator.clipboard.writeText(input.value);
-        alert('📋 คัดลอกคำสั่ง Loadstring เรียบร้อยแล้ว!');
-    }
-};
-
-// ฟังก์ชันลบสคริปต์
-window.deleteScript = async function(id) {
-    if (!confirm('⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบสคริปต์นี้? (สคริปต์และลิงก์จะถูกลบถาวรทันที)')) {
-        return;
-    }
-
-    const { error } = await supabase
-        .from('scripts')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', currentUser.id);
-
-    if (error) {
-        alert('❌ เกิดข้อผิดพลาดในการลบ: ' + error.message);
-    } else {
-        alert('✅ ลบสคริปต์เรียบร้อยแล้ว!');
-        loadUserScripts(); // โหลดรายการใหม่
-    }
-};
 
 function escapeHtml(text) {
-    return text
-        ? text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")
-        : '';
+    if (!text) return '';
+    return text.replace(/&/g, "&amp;")
+               .replace(/</g, "&lt;")
+               .replace(/>/g, "&gt;")
+               .replace(/"/g, "&quot;")
+               .replace(/'/g, "&#039;");
 }
